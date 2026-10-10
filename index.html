@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شكون كيعرفني مزيان؟</title>
+<style>
+  :root{
+    --bg:#0a0a0f; --card:#14141c; --card-2:#1c1c28; --border:#2a2a3a;
+    --accent:#7c5cff; --accent-2:#a78bfa; --vert:#4ade80;
+    --texte:#f0f0f5; --gris:#8a8a9a; --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--texte); line-height:1.6;
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; padding:24px;
+  }
+  .wrap{width:100%;max-width:640px;margin:auto;}
+  .screen{display:none;animation:fadeIn .4s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .hero{text-align:center;padding:40px 20px;}
+  .hero h1{
+    font-size:2rem;font-weight:800;letter-spacing:-.5px;margin-bottom:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .hero p{color:var(--gris);margin-bottom:32px;font-size:1.05rem;}
+  .input-group{margin-bottom:16px;text-align:right;}
+  .input-group label{display:block;font-size:.9rem;color:var(--gris);margin-bottom:8px;font-weight:600;}
+  .input-group input{
+    width:100%;background:var(--card);border:1.5px solid var(--border);
+    color:var(--texte);padding:14px 18px;border-radius:12px;font-size:1rem;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .input-group input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.15);}
+  .btn{
+    width:100%;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;border:none;padding:16px;border-radius:12px;font-size:1.05rem;
+    font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:inherit;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,92,255,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{background:var(--card);border:1.5px solid var(--border);color:var(--texte);}
+  .btn.secondary:hover{box-shadow:none;border-color:var(--accent);}
+  .progress-bar{height:6px;background:var(--card);border-radius:999px;overflow:hidden;margin-bottom:24px;}
+  .progress-fill{
+    height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    width:0%;transition:width .4s cubic-bezier(.4,0,.2,1);border-radius:999px;
+  }
+  .q-counter{text-align:center;color:var(--gris);font-size:.9rem;margin-bottom:12px;font-weight:600;}
+  .q-text{
+    font-size:1.4rem;font-weight:700;text-align:center;margin-bottom:32px;
+    line-height:1.4;min-height:80px;display:flex;align-items:center;justify-content:center;
+  }
+  .options{display:flex;flex-direction:column;gap:12px;}
+  .option{
+    background:var(--card);border:1.5px solid var(--border);color:var(--texte);
+    padding:18px 20px;border-radius:12px;font-size:1rem;font-weight:600;
+    cursor:pointer;transition:all .2s;text-align:right;font-family:inherit;
+    display:flex;align-items:center;gap:12px;
+  }
+  .option:hover{border-color:var(--accent);background:var(--card-2);transform:translateX(-4px);}
+  .option.selected{border-color:var(--accent);background:rgba(124,92,255,.15);box-shadow:0 0 0 3px rgba(124,92,255,.15);}
+  .option .letter{
+    width:32px;height:32px;border-radius:50%;background:var(--card-2);
+    border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;
+    font-size:.85rem;font-weight:700;flex-shrink:0;transition:all .2s;
+  }
+  .option.selected .letter{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .result-hero{text-align:center;padding:20px 0 32px;}
+  .score-circle{
+    width:160px;height:160px;margin:0 auto 24px;border-radius:50%;
+    background:conic-gradient(var(--accent) var(--pct),var(--card) 0);
+    display:flex;align-items:center;justify-content:center;position:relative;
+  }
+  .score-circle::before{content:'';position:absolute;inset:10px;border-radius:50%;background:var(--bg);}
+  .score-circle .score-num{
+    position:relative;font-size:2.5rem;font-weight:800;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .score-circle .score-num small{font-size:1rem;color:var(--gris);-webkit-text-fill-color:var(--gris);}
+  .result-hero h2{font-size:1.5rem;margin-bottom:8px;}
+  .result-hero p{color:var(--gris);}
+  .verdict{
+    background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);
+    padding:20px;margin-bottom:24px;text-align:center;
+  }
+  .verdict strong{color:var(--accent-2);}
+  .board-title{font-size:1.1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .board{display:flex;flex-direction:column;gap:10px;}
+  .board-empty{
+    background:var(--card);
+    border:1.5px dashed var(--border);
+    border-radius:var(--radius);
+    padding:40px 20px;
+    text-align:center;
+    color:var(--gris);
+  }
+  .board-empty .icon{font-size:2.5rem;margin-bottom:12px;}
+  .board-empty .title{font-weight:700;color:var(--texte);margin-bottom:6px;}
+  .board-empty .sub{font-size:.9rem;}
+  .share-box{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;}
+  .share-box .btn{flex:1;min-width:140px;}
+  .footer{
+    text-align:center;color:var(--gris);font-size:.8rem;margin-top:32px;
+    padding-top:20px;border-top:1px solid var(--border);
+  }
+  @media(max-width:520px){
+    .hero h1{font-size:1.6rem;}
+    .q-text{font-size:1.15rem;}
+    .score-circle{width:130px;height:130px;}
+    .score-circle .score-num{font-size:2rem;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- شاشة البداية -->
+  <div class="screen active" id="screen-start">
+    <div class="hero">
+      <h1>شكون كيعرفني مزيان؟</h1>
+      <p>جاوب على 10 أسئلة على صاحبك، وشوف واش كتعرفو بحق ولا لا.</p>
+    </div>
+    <div class="input-group">
+      <label>سمية الصاحب اللي غادي نختبروك عليه</label>
+      <input type="text" id="friend-name" placeholder="مثال: hajar" maxlength="30">
+    </div>
+    <div class="input-group">
+      <label>سميتك نتا</label>
+      <input type="text" id="my-name" placeholder="مثال: Karim" maxlength="30">
+    </div>
+    <button class="btn" onclick="startQuiz()">بدا الاختبار</button>
+    <div class="footer">الأسئلة غادي تكون على الصاحب اللي كتبتي سميتو فوق.</div>
+  </div>
+
+  <!-- شاشة الأسئلة -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="q-counter" id="q-counter">السؤال 1 من 10</div>
+    <div class="q-text" id="q-text">...</div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <!-- شاشة النتيجة -->
+  <div class="screen" id="screen-result">
+    <div class="result-hero">
+      <div class="score-circle" id="score-circle">
+        <div class="score-num" id="score-num">0<small>/10</small></div>
+      </div>
+      <h2 id="result-title">...</h2>
+      <p id="result-sub">...</p>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="board-title">🏆 لوحة الترتيب</div>
+    <div class="board" id="board"></div>
+    <div class="share-box">
+      <button class="btn secondary" onclick="copyLink()">📋 نسخ الرابط</button>
+      <button class="btn" onclick="restart()">🔁 عاود من جديد</button>
+    </div>
+    <div class="footer">شارك الرابط مع صحابك باش يجاوبو على نفس الأسئلة.</div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   الأسئلة
+   ============================================================ */
+const QUESTIONS = [
+  { q:"شنو هي الأكلة المفضلة عند {friend}؟", opts:["الكسكس","الطاجين","البسطيلة","البيتزا"] },
+  { q:"شنو اللون اللي كيعجبو بزاف؟", opts:["الأزرق","الأسود","الوردي","الأخضر"] },
+  { q:"فين كايحب يقضي العطلة؟", opts:["البحر","الجبل","الصحراء","المدينة"] },
+  { q:"شنو نوع الموسيقى اللي كايسمع؟", opts:["راي","شعبي","راب","أجنبية"] },
+  { q:"واش كايحب القهوة ولا الأتاي؟", opts:["القهوة","الأتاي","الجوج","والو"] },
+  { q:"شنو الوقت اللي كايحب يفيق فيه؟", opts:["قبل 8","8-10","10-12","بعد 12"] },
+  { q:"شنو نوع الأفلام اللي كايشوف؟", opts:["أكشن","كوميدي","رومانسي","رعب"] },
+  { q:"واش كايحب يقرا الكتب؟", opts:["بزاف","شي مرات","قليل","عمره"] },
+  { q:"شنو الحيوان المفضل عندو؟", opts:["القط","الكلب","العصفور","السمك"] },
+  { q:"واش كايحب السفر برا المغرب؟", opts:["بزاف","شي مرات","قليل","عمره"] }
+];
+
+/* ============================================================
+   الأجوبة الصحيحة — 0=أ, 1=ب, 2=ج, 3=د
+   ============================================================ */
+const CORRECT = [
+  0,  // 1: الكسكس
+  0,  // 2: الأزرق
+  0,  // 3: البحر
+  0,  // 4: راي
+  0,  // 5: القهوة
+  0,  // 6: قبل 8
+  2,  // 7: رومانسي
+  0,  // 8: بزاف
+  0,  // 9: القط
+  0   // 10: بزاف
+];
+
+const LETTERS = ["أ","ب","ج","د"];
+
+let state = { friend:"", me:"", current:0, answers:[], score:0 };
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function startQuiz(){
+  const f = document.getElementById('friend-name').value.trim();
+  const m = document.getElementById('my-name').value.trim();
+  if(!f || !m){ alert("عافاك كتب سمية الصاحب وسميتك."); return; }
+  state = { friend:f, me:m, current:0, answers:[], score:0 };
+  show('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[state.current];
+  const pct = (state.current / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-counter').textContent = `السؤال ${state.current+1} من ${QUESTIONS.length}`;
+  document.getElementById('q-text').textContent = q.q.replace('{friend}', state.friend);
+
+  const box = document.getElementById('options');
+  box.innerHTML = '';
+  q.opts.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className = 'option';
+    b.innerHTML = `<span class="letter">${LETTERS[i]}</span><span>${opt}</span>`;
+    b.onclick = ()=>selectAnswer(i,b);
+    box.appendChild(b);
+  });
+}
+
+function selectAnswer(i, el){
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const correct = CORRECT[state.current];
+  if(i === correct) state.score++;
+  state.answers.push({ q:state.current, chosen:i, correct });
+
+  setTimeout(()=>{
+    state.current++;
+    if(state.current < QUESTIONS.length){ renderQuestion(); }
+    else { showResult(); }
+  }, 300);
+}
+
+function showResult(){
+  const pct = (state.score / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const circle = document.getElementById('score-circle');
+  circle.style.setProperty('--pct', pct + '%');
+  document.getElementById('score-num').innerHTML = `${state.score}<small>/${QUESTIONS.length}</small>`;
+
+  let title, sub, verdict;
+  if(pct >= 90){
+    title = "ماشاء الله! 🎯";
+    sub = `نتا كتعرف ${state.friend} بحق.`;
+    verdict = `علاقة قوية، ماشي ساهل تلقى شي واحد كيعرفك بهاد المستوى.`;
+  } else if(pct >= 70){
+    title = "مزيان! 👏";
+    sub = `كتعرف ${state.friend} مزيان، ولكن كاين شي حوايج خفية.`;
+    verdict = `معرفة قوية، ولكن باقي كاين مجال تتعمق.`;
+  } else if(pct >= 50){
+    title = "متوسط 🤔";
+    sub = `كتعرف ${state.friend} شي حوايج، ولكن ماشي كلشي.`;
+    verdict = `خاصك تقضي وقت أكثر مع ${state.friend}.`;
+  } else if(pct >= 30){
+    title = "ضعيف 😅";
+    sub = `يالاه كتعرف ${state.friend}؟`;
+    verdict = `باين بلي باقي ما تعرفتوش مزيان.`;
+  } else {
+    title = "كارثة 💀";
+    sub = `واش نتا صاحبو بحق؟`;
+    verdict = `يمكن خاصك تعاود تتعرف عليه من جديد.`;
+  }
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+  document.getElementById('verdict').innerHTML = verdict;
+
+  renderBoard();
+  show('screen-result');
+}
+
+/* ============================================================
+   لوحة الترتيب — خاوية
+   ============================================================ */
+function renderBoard(){
+  const board = document.getElementById('board');
+  board.innerHTML = `
+    <div class="board-empty">
+      <div class="icon">🏆</div>
+      <div class="title">لسا ما كاينش نتائج</div>
+      <div class="sub">كون أنت الأول! لعب دابا وخلّي سميتك تبان هنا.</div>
+    </div>
+  `;
+}
+
+function copyLink(){
+  const url = window.location.href.split('?')[0] + '?q=' + encodeURIComponent(state.friend);
+  navigator.clipboard.writeText(url).then(()=>{
+    alert('تنسخ الرابط! شاركو مع صحابك.');
+  }).catch(()=>{ prompt('انسخ الرابط:', url); });
+}
+
+function restart(){
+  show('screen-start');
+  document.getElementById('friend-name').value = '';
+  document.getElementById('my-name').value = '';
+}
+
+(function init(){
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  if(q){
+    document.getElementById('friend-name').value = q;
+    document.querySelector('.hero p').textContent = `جاوب على الأسئلة على ${q}، وشوف واش كتعرفو مزيان.`;
+  }
+})();
+</script>
+</body>
+</html>
